@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel & Google Sheets Formula Reference</title>
+    <style>
+        :root[data-theme="light"] {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --formula-bg: #f5f5f5;
+            --border-color: #eee;
+            --search-border: #ddd;
+            --tag-bg: #e0e0e0;
+            --use-case-color: #666;
+            --formula-border: #ddd;
+        }
+
+        :root[data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --formula-bg: #2d2d2d;
+            --border-color: #333;
+            --search-border: #444;
+            --tag-bg: #444;
+            --use-case-color: #999;
+            --formula-border: #444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .theme-toggle {
+            background: var(--formula-bg);
+            border: 1px solid var(--formula-border);
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            opacity: 0.9;
+        }
+
+        .search-container {
+            position: sticky;
+            top: 0;
+            background: var(--bg-color);
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+            transition: background-color 0.3s;
+        }
+
+        #search {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--search-border);
+            border-radius: 4px;
+            background: var(--formula-bg);
+            color: var(--text-color);
+        }
+
+        .formula-section {
+            margin-bottom: 30px;
+        }
+
+        .formula {
+            background: var(--formula-bg);
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            overflow-x: auto;
+            border: 1px solid var(--formula-border);
+            margin-bottom: 10px;
+        }
+
+        .tag {
+            background: var(--tag-bg);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            margin-left: 8px;
+        }
+
+        .use-case {
+            color: var(--use-case-color);
+            font-style: italic;
+            margin-top: 5px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+
+        h3 {
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        #search::placeholder {
+            color: var(--use-case-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <h1>Excel & Google Sheets Formula Reference</h1>
+        <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Theme</button>
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="search" placeholder="Search formulas...">
+    </div>
+
+    <div class="formula-section" id="text-manipulation">
+        <h2>Text Manipulation</h2>
+        
+        <h3>Clean Phone Numbers (12 to 10 digits)</h3>
+        <div class="formula">
+            =CLEAN(TRIM(IF(LEFT(P2,2)="91",IF(LEN(P2)=12,RIGHT(P2,10),P2),P2)))
+        </div>
+        <div class="use-case">Converts Indian phone numbers starting with '91' to 10-digit format while preserving other numbers.</div>
+
+        <h3>Split Text at Character</h3>
+        <div class="formula">
+            =LEFT(text,FIND(character,text)-1)
+        </div>
+        <div class="formula">
+            =RIGHT(B5,LEN(B5)-FIND("_",B5))
+        </div>
+        <div class="use-case">Useful for splitting email addresses, file names, or any text containing a specific delimiter.</div>
+
+        <h3>Count Specific Characters</h3>
+        <div class="formula">
+            =LEN(A2)-LEN(SUBSTITUTE(A2, "s", ""))
+        </div>
+        <div class="use-case">Count occurrences of any character in a cell. Common use: counting special characters or validating data format.</div>
+    </div>
+
+    <div class="formula-section" id="date-functions">
+        <h2>Date Functions</h2>
+        
+        <h3>Calculate Age from DOB</h3>
+        <div class="formula">
+            =INT(YEARFRAC(TODAY(),F2,1))
+        </div>
+        <div class="use-case">Calculates current age based on date of birth, accounting for leap years.</div>
+
+        <h3>Get Month Name from Serial Number</h3>
+        <div class="formula">
+            =TEXT(MONTH(E2)*29,"mmm")
+        </div>
+        <div class="use-case">Legacy formula that works (reason unknown for *29)</div>
+        <div class="formula">
+            =TEXT(E2,"mmm")
+        </div>
+        <div class="use-case">Alternative: Direct conversion of date to month name</div>
+    </div>
+
+    <div class="formula-section" id="lookup-functions">
+        <h2>Lookup Functions</h2>
+        
+        <h3>INDEX and MATCH</h3>
+        <div class="formula">
+            =INDEX($B$16:$B$27,MATCH(B7,$C$16:$C$27,0))
+        </div>
+        <div class="use-case">More flexible alternative to VLOOKUP. Useful for bi-directional lookups and when columns might change.</div>
+
+        <h3>Two-way Lookup (Row and Column)</h3>
+        <div class="formula">
+            =VLOOKUP(row reference,&lt;full array&gt;,MATCH(col reference,&lt;col array&gt;,match_type))
+        </div>
+        <div class="use-case">Perfect for price tables, matrices, or any two-dimensional lookup scenarios.</div>
+    </div>
+
+    <div class="formula-section" id="utility-functions">
+        <h2>Utility Functions</h2>
+        
+        <h3>Dynamic Sheet Reference</h3>
+        <div class="formula">
+            =INDIRECT("'" & A1 & " days'!B5")
+        </div>
+        <div class="use-case">References cells across different sheets using dynamic sheet names.</div>
+
+        <h3>Generate Sheet Names List</h3>
+        <div class="formula">
+            =REPLACE(GET.WORKBOOK(1),1,FIND("]",GET.WORKBOOK(1),""))
+        </div>
+        <div class="use-case">Creates a named range 'listsheets' containing all worksheet names.</div>
+
+        <h3>Count Non-matching Cells</h3>
+        <div class="formula">
+            =COUNTIF(C:C, "&lt;&gt;absent")
+        </div>
+        <div class="use-case">Counts cells that don't match a specific value. Useful for attendance tracking or error checking.</div>
+
+        <h3>Hyperlink Using Row and Column</h3>
+        <div class="formula">
+            =HYPERLINK("#'Rating_Structure'!" & ADDRESS(A2, B2), "Link Text")
+        </div>
+        <div class="use-case">Creates dynamic hyperlinks based on row and column references.</div>
+
+        <h3>Sum Products of Columns</h3>
+        <div class="formula">
+            =SUMPRODUCT(column1, column2)
+        </div>
+        <div class="use-case">Multiplies corresponding values in two columns and sums the results.</div>
+    </div>
+
+    <div class="formula-section" id="vba-functions">
+        <h2>VBA Functions</h2>
+        
+        <h3>Extract URL from Hyperlink <span class="tag">VBA</span></h3>
+        <div class="formula">
+Function URL(Hyperlink As Range)
+  URL = Hyperlink.Hyperlinks(1).Address
+End Function
+        </div>
+        <div class="use-case">Extracts the URL from a hyperlinked cell. Use with =URL(cell) after adding to VBA module.</div>
+    </div>
+
+    <div class="formula-section" id="web-integration">
+        <h2>Web Integration</h2>
+        
+        <h3>Print Logos from Web</h3>
+        <div class="formula">
+            =IMAGE(CONCAT("https://logo.clearbit.com/", cell address, ".com"))
+        </div>
+        <div class="use-case">Automatically fetches company logos. Note: Requires Microsoft 365.</div>
+    </div>
+
+    <script>
+        // Theme Toggle Function
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+        }
+
+        // Search functionality
+        const search = document.getElementById('search');
+        const formulaSections = document.querySelectorAll('.formula-section h3');
+        
+        search.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            formulaSections.forEach(section => {
+                const formulaBlock = section.parentElement;
+                const content = formulaBlock.textContent.toLowerCase();
+                
+                if (content.includes(searchTerm)) {
+                    section.parentElement.style.display = 'block';
+                    section.parentElement.parentElement.style.display = 'block';
+                } else {
+                    section.parentElement.style.display = 'none';
+                }
+                
+                document.querySelectorAll('.formula-section').forEach(section => {
+                    const visibleFormulas = section.querySelectorAll('h3').length;
+                    const hiddenFormulas = section.querySelectorAll('h3[style="display: none"]').length;
+                    
+                    if (visibleFormulas === hiddenFormulas) {
+                        section.style.display = 'none';
+                    } else {
+                        section.style.display = 'block';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
